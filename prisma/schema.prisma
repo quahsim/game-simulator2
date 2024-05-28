@@ -1,0 +1,76 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  userId      String      @id @map("userId") @unique
+  password    String      @map("password")
+  createdAt   DateTime    @default(now()) @map("createdAt")
+  characters  Characters[]
+
+  @@map("Users")
+}
+
+model Characters {
+  userId        String                @map("userId")
+  characterId   Int                   @id @default(autoincrement()) @map("characterId")
+  name          String                @unique @map("name")
+  health        Int                   @default(500) @map("health")
+  power         Int                   @default(100) @map("power")
+  money         Int                   @default(10000) @map("money")
+  createdAt     DateTime              @default(now()) @map("createdAt")
+  updatedAt     DateTime              @updatedAt @map("updatedAt")
+
+  user          Users                 @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  inventories   CharacterInventories[]
+  equippedItems CharacterItems[]
+
+  @@map("Characters")
+}
+
+model Items {
+  itemCode     Int                   @id @unique @map("itemCode")
+  itemName     String                @map("itemName")
+  itemStat     Json                  @map("itemStat")
+  itemPrice    Int                   @map("itemPrice")
+
+  inventories  CharacterInventories[]
+  equipped     CharacterItems[]
+
+  @@map("Items")
+}
+
+model CharacterInventories {
+  inventoryId  Int                   @id @default(autoincrement()) @map("inventoryId")
+  characterId  Int                   @map("characterId")
+  itemCode     Int                   @map("itemCode")
+  createdAt    DateTime              @default(now()) @map("createdAt")
+  updatedAt    DateTime              @updatedAt @map("updatedAt")
+
+  character    Characters            @relation(fields: [characterId], references: [characterId], onDelete: Cascade)
+  item         Items                 @relation(fields: [itemCode], references: [itemCode])
+
+  @@map("CharacterInventories")
+  @@unique([characterId, itemCode])
+}
+
+model CharacterItems {
+  equippedId      Int                @id @default(autoincrement()) @map("equippedId")
+  characterId     Int                @map("characterId")
+  itemCode        Int                @map("itemCode")
+  power           Int                @map("power")
+  health          Int                @map("health")
+  createdAt       DateTime           @default(now()) @map("createdAt")
+  updatedAt       DateTime           @updatedAt @map("updatedAt")
+
+  character       Characters         @relation(fields: [characterId], references: [characterId], onDelete: Cascade)
+  item            Items              @relation(fields: [itemCode], references: [itemCode])
+
+  @@map("CharacterItems")
+  @@unique([characterId, itemCode])
+}
