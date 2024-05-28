@@ -16,6 +16,10 @@ app.use(LogMiddleware);
 app.use(express.json());
 app.use(cookieParser());
 
+app.get("/", (req, res) => {
+  return res.json({ message: "Hi! Welcome to my Game Simulator 2" });
+});
+
 app.use("/api", UsersRouter);
 app.use("/api", CharactersRouter);
 app.use("/api", ItemsRouter);
