@@ -1,4 +1,5 @@
 # Assignment: Game Simulator 2
+과제대한 질문&답변 링크 : https://github.com/quahsim/game-simulator2/issues/1#issue-2322202428
 
 ## 기능
 - 회원가입 & 로그인 
